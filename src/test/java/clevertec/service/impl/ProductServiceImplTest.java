@@ -1,13 +1,12 @@
 package clevertec.service.impl;
 
+import clevertec.dao.ProductDao;
 import clevertec.data.ProductTestData;
 import clevertec.dto.InfoProductDto;
 import clevertec.dto.ProductDto;
 import clevertec.entity.Product;
 import clevertec.exception.ProductNotFoundException;
 import clevertec.mapper.ProductMapper;
-import clevertec.proxy.DaoProxyImpl;
-import clevertec.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +29,7 @@ public class ProductServiceImplTest {
     @Mock
     private ProductMapper productMapper;
     @Mock
-    private DaoProxyImpl daoProxy;
+    private ProductDao dao;
     @InjectMocks
     private ProductServiceImpl productService;
 
@@ -45,7 +44,7 @@ public class ProductServiceImplTest {
                 .buildInfoProductDto();
         UUID id = product.getId();
 
-        when(daoProxy.getProductById(id))
+        when(dao.findById(id))
                 .thenReturn(Optional.of(product));
         when(productMapper.toInfoProductDto(product))
                 .thenReturn(expectedDto);
@@ -54,7 +53,7 @@ public class ProductServiceImplTest {
         InfoProductDto actualDto = productService.get(id);
 
         //Then
-        verify(daoProxy).getProductById(id);
+        verify(dao).findById(id);
         verify(productMapper).toInfoProductDto(product);
         assertEquals(expectedDto, actualDto);
     }
@@ -71,7 +70,7 @@ public class ProductServiceImplTest {
         List<Product> products = Collections.singletonList(product);
         List<InfoProductDto> expected = Collections.singletonList(infoProductDto);
 
-        when(daoProxy.getAllProducts(10, 1))
+        when(dao.findAll(10, 1))
                 .thenReturn(products);
 
         when(productMapper.toInfoProductDto(product))
@@ -82,8 +81,8 @@ public class ProductServiceImplTest {
 
         //Then
         assertEquals(expected, result);
-        verify(daoProxy)
-                .getAllProducts(10, 1);
+        verify(dao)
+                .findAll(10, 1);
         verify(productMapper)
                 .toInfoProductDto(product);
     }
@@ -91,15 +90,15 @@ public class ProductServiceImplTest {
     @Test
     public void shouldReturnEmptyListWhenNoProductsExist() {
         // Given
-        when(daoProxy.getAllProducts(10, 1))
+        when(dao.findAll(10, 1))
                 .thenReturn(Collections.emptyList());
 
         // When
         List<InfoProductDto> result = productService.getAllProducts(10, 1);
 
         // Then
-        verify(daoProxy)
-                .getAllProducts(10, 1);
+        verify(dao)
+                .findAll(10, 1);
         assertTrue(result.isEmpty());
     }
 
@@ -115,7 +114,7 @@ public class ProductServiceImplTest {
         when(productMapper.toProduct(productDto))
                 .thenReturn(product);
 
-        when(daoProxy.save(product))
+        when(dao.save(product))
                 .thenReturn(product);
 
         //When
@@ -125,7 +124,7 @@ public class ProductServiceImplTest {
         assertEquals(product.getId(), result);
         verify(productMapper)
                 .toProduct(productDto);
-        verify(daoProxy)
+        verify(dao)
                 .save(product);
     }
 
@@ -142,22 +141,22 @@ public class ProductServiceImplTest {
                 .buildProductDto();
         UUID id = product.getId();
 
-        when(daoProxy.getProductById(id))
+        when(dao.findById(id))
                 .thenReturn(Optional.of(product));
         when(productMapper.merge(product, productDto))
                 .thenReturn(product);
-        when(daoProxy.update(product))
+        when(dao.update(product))
                 .thenReturn(product);
 
         //When
         UUID update = productService.update(id, productDto);
 
         //Then
-        verify(daoProxy)
-                .getProductById(id);
+        verify(dao)
+                .findById(id);
         verify(productMapper)
                 .merge(product, productDto);
-        verify(daoProxy)
+        verify(dao)
                 .update(product);
         assertEquals(id, update);
     }
@@ -171,8 +170,8 @@ public class ProductServiceImplTest {
         productService.delete(uuid);
 
         // Then
-        verify(daoProxy)
-                .deleteProductById(uuid);
+        verify(dao)
+                .delete(uuid);
     }
 
     @Test
@@ -183,7 +182,7 @@ public class ProductServiceImplTest {
                 .build()
                 .buildProductDto();
 
-        when(daoProxy.getProductById(id))
+        when(dao.findById(id))
                 .thenReturn(Optional.empty());
 
         // When & Then
