@@ -1,4 +1,4 @@
-package clevertec.fliter;
+package clevertec.filter;
 
 import clevertec.exception.ProductNotFoundException;
 

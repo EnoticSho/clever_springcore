@@ -1,12 +1,14 @@
 package clevertec.dao.impl;
 
 import clevertec.dao.ProductDao;
-import clevertec.dbConnection.DatabaseConnectionManager;
 import clevertec.entity.Product;
 import clevertec.exception.DatabaseAccessException;
 import clevertec.exception.ProductNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +24,8 @@ import java.util.UUID;
  * Предоставляет методы для поиска, сохранения, обновления и удаления продуктов.
  */
 @Slf4j
+@Repository
+@RequiredArgsConstructor
 public class ProductDaoImpl implements ProductDao {
 
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM products WHERE id = ?";
@@ -29,6 +33,8 @@ public class ProductDaoImpl implements ProductDao {
     private static final String SAVE_QUERY = "INSERT INTO products (id, name, price, weight, creation_date) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY = "UPDATE products SET name = ?, price = ?, weight = ?, creation_date = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM products WHERE id = ?";
+
+    private final DataSource dataSource;
 
     /**
      * Ищет продукт в базе данных по его уникальному идентификатору.
@@ -38,7 +44,7 @@ public class ProductDaoImpl implements ProductDao {
      */
     @Override
     public Optional<Product> findById(UUID uuid) {
-        try (Connection connection = DatabaseConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             preparedStatement.setObject(1, uuid);
 
@@ -64,7 +70,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<Product> findAll(int pageSize, int pageNumber) {
         List<Product> productList = new ArrayList<>();
-        try (Connection connection = DatabaseConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_QUERY)) {
             preparedStatement.setInt(1, pageSize);
             preparedStatement.setInt(2, (pageNumber - 1) * pageSize);
@@ -88,7 +94,7 @@ public class ProductDaoImpl implements ProductDao {
      */
     @Override
     public Product save(Product product) {
-        try (Connection connection = DatabaseConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_QUERY)) {
             preparedStatement.setObject(1, product.getId());
             preparedStatement.setString(2, product.getName());
@@ -110,7 +116,7 @@ public class ProductDaoImpl implements ProductDao {
      */
     @Override
     public Product update(Product product) {
-        try (Connection connection = DatabaseConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice());
@@ -131,7 +137,7 @@ public class ProductDaoImpl implements ProductDao {
      */
     @Override
     public void delete(UUID uuid) {
-        try (Connection connection = DatabaseConnectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)) {
             preparedStatement.setObject(1, uuid);
             int rowsAffected = preparedStatement.executeUpdate();

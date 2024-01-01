@@ -8,6 +8,7 @@ import clevertec.mapper.ProductMapper;
 import clevertec.proxy.DaoProxyImpl;
 import clevertec.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.util.UUID;
  * Реализация сервиса для работы с продуктами.
  * Предоставляет методы для получения, создания, обновления и удаления продуктов.
  */
+@Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 

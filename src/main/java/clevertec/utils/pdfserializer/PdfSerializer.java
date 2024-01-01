@@ -7,6 +7,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
+@Service
 public class PdfSerializer {
 
     public Path serializeObjectToPdf(Object classObject) {

@@ -2,8 +2,8 @@ package clevertec.servlet;
 
 import clevertec.service.PdfService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +22,8 @@ public class PdfServlet extends HttpServlet {
 
     @Override
     public void init() {
-        ServletContext ctx = getServletContext();
-        this.pdfService = (PdfService) ctx.getAttribute("pdf");
+        ApplicationContext context = (ApplicationContext) getServletContext().getAttribute("springContext");
+        this.pdfService = context.getBean(PdfService.class);
     }
 
     @Override
