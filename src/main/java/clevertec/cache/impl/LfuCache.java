@@ -2,6 +2,8 @@ package clevertec.cache.impl;
 
 import clevertec.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,6 +19,7 @@ import java.util.TreeMap;
  * @param <V> тип значений, хранящихся в кэше
  */
 @Slf4j
+@Component
 public class LfuCache<K, V> implements Cache<K, V> {
 
     private final int capacity;
@@ -29,7 +32,7 @@ public class LfuCache<K, V> implements Cache<K, V> {
      *
      * @param capacity максимальное количество элементов, которое может хранить кэш
      */
-    public LfuCache(int capacity) {
+    public LfuCache(@Value("${cache.capacity}")int capacity) {
         this.capacity = capacity;
         this.mainMap = new HashMap<>();
         this.freqMap = new HashMap<>();

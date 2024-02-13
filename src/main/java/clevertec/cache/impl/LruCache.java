@@ -2,10 +2,11 @@ package clevertec.cache.impl;
 
 import clevertec.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,17 +18,18 @@ import java.util.Optional;
  * @param <V> тип значений, хранящихся в кэше
  */
 @Slf4j
+@Component
 public class LruCache<K, V> implements Cache<K, V> {
     private final int capacity;
     private final Map<K, V> map;
-    private final List<K> linkedList;
+    private final LinkedList<K> linkedList;
 
     /**
      * Конструктор для создания кэша LRU с заданной вместимостью.
      *
      * @param capacity максимальное количество элементов, которое может хранить кэш
      */
-    public LruCache(int capacity) {
+    public LruCache(@Value("${cache.capacity}")int capacity) {
         this.capacity = capacity;
         this.map = new HashMap<>();
         this.linkedList = new LinkedList<>();

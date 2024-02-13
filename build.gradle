@@ -10,6 +10,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    springVersion = '6.1.2'
+}
+
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.26'
     implementation 'org.slf4j:slf4j-api:1.7.30'
@@ -19,9 +23,13 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'com.itextpdf:itextpdf:5.5.13'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
     implementation 'org.liquibase:liquibase-core:4.25.0'
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation "org.springframework:spring-core:${springVersion}"
+    implementation "org.springframework:spring-context:${springVersion}"
+    implementation 'org.aspectj:aspectjweaver:1.9.6'
+    implementation 'org.aspectj:aspectjrt:1.9.6'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'

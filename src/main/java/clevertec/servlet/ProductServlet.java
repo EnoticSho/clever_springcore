@@ -5,8 +5,9 @@ import clevertec.dto.ProductDto;
 import clevertec.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
-import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +22,14 @@ import java.util.UUID;
 public class ProductServlet extends HttpServlet {
 
     private ProductService productService;
+
     private ObjectMapper objectMapper;
 
     @Override
     public void init() {
-        ServletContext ctx = getServletContext();
-        this.productService = (ProductService) ctx.getAttribute("productService");
-        this.objectMapper = (ObjectMapper) ctx.getAttribute("objectMapper");
+        ApplicationContext context = (ApplicationContext) getServletContext().getAttribute("springContext");
+        this.productService = context.getBean(ProductService.class);
+        this.objectMapper = context.getBean(ObjectMapper.class);
     }
 
     @Override

@@ -1,13 +1,14 @@
 package clevertec.service.impl;
 
+import clevertec.dao.ProductDao;
 import clevertec.dto.InfoProductDto;
 import clevertec.dto.ProductDto;
 import clevertec.entity.Product;
 import clevertec.exception.ProductNotFoundException;
 import clevertec.mapper.ProductMapper;
-import clevertec.proxy.DaoProxyImpl;
 import clevertec.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -18,10 +19,11 @@ import java.util.UUID;
  * Реализация сервиса для работы с продуктами.
  * Предоставляет методы для получения, создания, обновления и удаления продуктов.
  */
+@Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final DaoProxyImpl daoProxy;
+    private final ProductDao dao;
     private final ProductMapper productMapper;
 
     /**
@@ -33,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public InfoProductDto get(UUID uuid) {
-        return daoProxy.getProductById(uuid)
+        return dao.findById(uuid)
                 .map(productMapper::toInfoProductDto)
                 .orElseThrow(() -> new ProductNotFoundException(uuid));
     }
@@ -47,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<InfoProductDto> getAllProducts(int pageSize, int pageNumber) {
-        return daoProxy.getAllProducts(pageSize, pageNumber).stream()
+        return dao.findAll(pageSize, pageNumber).stream()
                 .map(productMapper::toInfoProductDto)
                 .toList();
     }
@@ -62,10 +64,10 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public UUID update(UUID uuid, @Valid ProductDto productDto) {
-        Product product = daoProxy.getProductById(uuid)
+        Product product = dao.findById(uuid)
                 .orElseThrow(() -> new ProductNotFoundException(uuid));
         Product merge = productMapper.merge(product, productDto);
-        return daoProxy.update(merge).getId();
+        return dao.update(merge).getId();
     }
 
     /**
@@ -79,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.toProduct(productDto);
         product.setId(UUID.randomUUID());
         product.setCreated(LocalDateTime.now());
-        return daoProxy.save(product).getId();
+        return dao.save(product).getId();
     }
 
     /**
@@ -89,6 +91,6 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public void delete(UUID uuid) {
-        daoProxy.deleteProductById(uuid);
+        dao.delete(uuid);
     }
 }

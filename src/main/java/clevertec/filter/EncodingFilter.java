@@ -1,4 +1,4 @@
-package clevertec.fliter;
+package clevertec.filter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

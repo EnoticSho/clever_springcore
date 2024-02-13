@@ -1,9 +1,10 @@
-db:
-  dbUsername: root
-  dbPassword: root
-  dbUrl: jdbc:postgresql://postgres:5432/database
+database:
+  username: root
+  password: root
+  url: jdbc:postgresql://postgres:5432/database
+  driver-class-name: org.postgresql.Driver
   initialize-db: true
   sql-path: liquibase/db-changelog.sql
 cache:
   capacity: 5
-  type: lfu
+  type: lru
